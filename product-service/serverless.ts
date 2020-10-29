@@ -29,7 +29,7 @@ const serverlessConfiguration: Serverless = {
     },
   },
   functions: {
-    hello: {
+    getAllProducts: {
       handler: 'handler.getAllProducts',
       events: [
         {
@@ -39,7 +39,18 @@ const serverlessConfiguration: Serverless = {
           }
         }
       ]
-    }
+    },
+    getProductById: {
+      handler: 'handler.getProductById',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'products/{productId}',
+          }
+        }
+      ]
+    },
   }
 }
 
