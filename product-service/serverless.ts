@@ -19,6 +19,8 @@ const serverlessConfiguration: Serverless = {
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
+    stage: 'dev',
+    region: 'eu-west-1',
     apiGateway: {
       minimumCompressionSize: 1024,
     },
@@ -28,12 +30,12 @@ const serverlessConfiguration: Serverless = {
   },
   functions: {
     hello: {
-      handler: 'handler.hello',
+      handler: 'handler.getAllProducts',
       events: [
         {
           http: {
             method: 'get',
-            path: 'hello',
+            path: 'products',
           }
         }
       ]
