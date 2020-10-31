@@ -27,6 +27,9 @@ const serverlessConfiguration: Serverless = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
+    httpApi: {
+      cors: false,
+    }
   },
   functions: {
     getAllProducts: {
@@ -36,9 +39,10 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products',
+            cors: false,
           }
         }
-      ]
+      ],
     },
     getProductById: {
       handler: 'handlers/getProductById/getProductById.getProductById',
@@ -47,6 +51,19 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products/{productId}',
+            cors: false,
+          }
+        }
+      ]
+    },
+    getCurrentWeather: {
+      handler: 'handlers/getCurrentWeather/getCurrentWeather.getCurrentWeather',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'currentWeather',
+            cors: false,
           }
         }
       ]
