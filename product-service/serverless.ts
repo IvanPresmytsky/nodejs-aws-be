@@ -30,7 +30,7 @@ const serverlessConfiguration: Serverless = {
   },
   functions: {
     getAllProducts: {
-      handler: 'handler.getAllProducts',
+      handler: 'handlers/getAllProducts/getAllProducts.getAllProducts',
       events: [
         {
           http: {
@@ -41,7 +41,7 @@ const serverlessConfiguration: Serverless = {
       ]
     },
     getProductById: {
-      handler: 'handler.getProductById',
+      handler: 'handlers/getProductById/getProductById.getProductById',
       events: [
         {
           http: {
