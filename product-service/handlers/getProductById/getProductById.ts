@@ -1,6 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import * as products from '../../mocks/products.json';
 import 'source-map-support/register';
+import { errorMessages } from './errorMessages';
 
 export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
   const { productId } = event.pathParameters;
@@ -9,7 +10,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
   if (!product) {
     return {
       statusCode: 404,
-      body: `Product with id: ${productId} is not found!`
+      body: errorMessages.notFound(productId),
     }
   }
 
