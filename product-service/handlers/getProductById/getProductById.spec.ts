@@ -1,5 +1,6 @@
 import { APIGatewayProxyEvent, Context} from 'aws-lambda';
-import * as products from '../../mocks/products.json';
+import products from '../../mocks/products.json';
+import { getCORSHeaders } from '../../utils';
 import { errorMessages } from './errorMessages';
 import { getProductById } from '.';
 
@@ -22,11 +23,12 @@ describe('getAllProducts handler', () => {
 
     await expect(result).toEqual({
       statusCode: 200,
+      headers: getCORSHeaders(),
       body: stringifiedProduct,
     })
   });
 
-  it('should return a products by related id', async () => {
+  it('should return not found message in case product was not found', async () => {
     const productId = 'incorrect-id';
     const result = await getProductById(
       {
@@ -40,6 +42,7 @@ describe('getAllProducts handler', () => {
 
     await expect(result).toEqual({
       statusCode: 404,
+      headers: getCORSHeaders(),
       body: errorMessages.notFound(productId),
     })
   });

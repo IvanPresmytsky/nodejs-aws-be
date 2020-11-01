@@ -12,10 +12,16 @@ const serverlessConfiguration: Serverless = {
     webpack: {
       webpackConfig: './webpack.config.js',
       includeModules: true
+    },
+    documentation: {
+      version: '1',
+      title: 'products API',
+      description: 'products API for craft beer online shop',
+      models: {},
     }
   },
   // Add the serverless-webpack plugin
-  plugins: ['serverless-webpack'],
+  plugins: ['serverless-webpack', 'serverless-openapi-documentation'],
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
@@ -27,9 +33,6 @@ const serverlessConfiguration: Serverless = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
-    httpApi: {
-      cors: false,
-    }
   },
   functions: {
     getAllProducts: {
@@ -39,7 +42,7 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products',
-            cors: false,
+            cors: true,
           }
         }
       ],
@@ -51,9 +54,22 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products/{productId}',
-            cors: false,
+            cors: true,
+/*             documentation: {
+              summary: "Get products",
+              description: "Get product by specific id",
+              pathParams: {
+                productId: {
+                  description: "The id of the product",
+                  scema: {
+                    type: "string",
+                    pattern: "^[-a-z0-9_]+$",
+                  }
+                }
+              }
+            } */
           }
-        }
+        },
       ]
     },
     getCurrentWeather: {
@@ -63,7 +79,7 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'currentWeather',
-            cors: false,
+            cors: true,
           }
         }
       ]

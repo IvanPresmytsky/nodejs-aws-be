@@ -1,5 +1,6 @@
 import { APIGatewayProxyEvent, Context} from 'aws-lambda';
-import * as products from '../../mocks/products.json';
+import products from '../../mocks/products.json';
+import { getCORSHeaders } from '../../utils';
 import { getAllProducts } from '.';
 
 describe('getAllProducts handler', () => {
@@ -9,6 +10,7 @@ describe('getAllProducts handler', () => {
 
     await expect(result).toEqual({
       statusCode: 200,
+      headers: getCORSHeaders(),
       body: stringifiedProducts,
     })
   });

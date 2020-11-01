@@ -1,6 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import 'source-map-support/register';
+import { getCORSHeaders } from '../../utils';
 import { getWeather } from './getWeather.helper';
+import 'source-map-support/register';
 
 // TODO remove after task-3 review
 export const getCurrentWeather: APIGatewayProxyHandler = async (event, _context) => {
@@ -8,9 +9,9 @@ export const getCurrentWeather: APIGatewayProxyHandler = async (event, _context)
 
   try {
     const weaherResponse = await getWeather(city);
-    console.log('RESPONSE: ', weaherResponse.data);
     return {
       statusCode: 200,
+      headers: getCORSHeaders(),
       body: JSON.stringify(weaherResponse.data, null, 2),
     };
   } catch (error) {
