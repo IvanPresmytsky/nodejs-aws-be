@@ -1,6 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { DBClient } from '../../models';
 import { getCORSHeaders, messagesBuilder } from '../../utils';
+import { TProduct } from '../../types';
 
 import 'source-map-support/register';
 
@@ -8,7 +9,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   console.log(messagesBuilder.incomingEvent(event));
   const headers = getCORSHeaders();
 
-  const productData = event?.body && JSON.parse(event.body);
+  const productData: TProduct = event?.body && JSON.parse(event.body);
 
   if (!productData) {
     console.error(messagesBuilder.createProduct.badRequest());
@@ -51,7 +52,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
       };
     }
 
-    console.error(messagesBuilder.createProduct.success(product));
+    console.error(messagesBuilder.createProduct.success(product as TProduct));
     return {
       statusCode: 201,
       headers,

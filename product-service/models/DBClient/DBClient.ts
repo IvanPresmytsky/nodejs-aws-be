@@ -1,5 +1,7 @@
 import { Client } from 'pg';
 import { DBOptions } from './dbConfig.consts';
+import { getInsertProductsQuery, getInsertStocksQuery } from '../../utils/queryBuilders';
+import { TProduct, TProducts } from '../../types';
 
 export class DBClient {
   client: Client;
@@ -78,43 +80,37 @@ export class DBClient {
       await this.createTables();
 
       const hasProducts = await this.checkIdDataExists('products');
+      let productIds;
       if(!hasProducts) {
-        const productsInserted = await this.client.query(`
-          INSERT INTO products (id, title, description, price) VALUES
-          ('506ddef5-d329-411b-a14a-f8c71b9f2a03', 'IPA', 'British IPA', 5),
-          ('b24e5533-de91-4f2b-be6d-897f47e19f2c', 'IPA', 'West Coast IPA', 4),
-          ('c8e55fa4-5edb-48f2-997c-6d0b8da01b5c', 'IPA', 'New England Style IPA', 6)
-        `);
+        const query = getInsertProductsQuery();
+        await this.client.query(query);
+
+        const { rows } = await this.client.query(`SELECT id FROM products`)
     
-        if (!productsInserted) {
+        if (!rows?.length) {
           throw new Error('Failed to insert into Products table!');
         } else  {
-          console.log(`${productsInserted.rowCount} rows of Products table successfully inserted`);
+          console.log(`${rows.length} rows of Products table successfully inserted`);
         }
-        console.log('PRODUCTS_INSERTED: ', productsInserted);
       }
 
       const hasStocks = await this.checkIdDataExists('stocks');
-      if (!hasStocks) {
-        const stocksInserted = await this.client.query(`
-          INSERT INTO stocks (product_id, count) VALUES
-          ('506ddef5-d329-411b-a14a-f8c71b9f2a03', 101),
-          ('b24e5533-de91-4f2b-be6d-897f47e19f2c', 105),
-          ('c8e55fa4-5edb-48f2-997c-6d0b8da01b5c', 15)
-        `);
+      if (!hasStocks && productIds) {
+        const query = getInsertStocksQuery(productIds);
+        const stocksInserted = await this.client.query(query);
+
         if (!stocksInserted) {
           throw new Error('Failed to insert into Stocks table!');
         } else  {
           console.log(`${stocksInserted.rowCount} rows of Stocks table successfully inserted`);
         }
-        console.log('STOCKS_INSERTED: ', stocksInserted);
       }
     } catch(err) {
       return err;
     }
   }
 
-  async getAllProducts() {
+  async getAllProducts(): Promise<TProducts | string> {
     try {
       const { rows } = await this.client.query(`
         SELECT id, title, description, price, count FROM
@@ -130,7 +126,7 @@ export class DBClient {
     }
   }
 
-  async getProductById(id: string) {
+  async getProductById(id: string): Promise<TProduct | string> {
     try {
       const { rows } = await this.client.query(`
         SELECT id, title, description, price, count FROM
@@ -148,7 +144,13 @@ export class DBClient {
     }
   }
 
-  async createProduct({ id, title, description, price, count }: any) {
+  async createProduct({
+    id,
+    title,
+    description,
+    price,
+    count
+  }: TProduct): Promise<TProduct | string> {
     try {
       const productCreated = await this.client.query(`
         INSERT INTO products (id, title, description, price) VALUES

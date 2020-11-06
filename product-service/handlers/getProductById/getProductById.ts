@@ -1,12 +1,13 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { DBClient } from '../../models';
 import { getCORSHeaders, messagesBuilder } from '../../utils';
+import { TProduct } from '../../types';
 
 import 'source-map-support/register';
 
 export const getProductById: APIGatewayProxyHandler = async (event, _context) => {
   console.log(messagesBuilder.incomingEvent(event));
-  const productId = event?.pathParameters?.productId || '506ddef5-d329-411b-a14a-f8c71b9f2a03';
+  const productId = event?.pathParameters?.productId;
   const headers = getCORSHeaders();
   
   if (!productId) {
@@ -34,7 +35,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
       };
     }
 
-    console.error(messagesBuilder.getProductById.success(product));
+    console.error(messagesBuilder.getProductById.success(product as TProduct));
     return {
       statusCode: 200,
       headers,
