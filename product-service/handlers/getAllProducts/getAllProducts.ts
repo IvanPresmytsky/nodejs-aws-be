@@ -11,6 +11,7 @@ export const getAllProducts: APIGatewayProxyHandler = async (event, _context) =>
 
   try {
     await client.connect();
+    // TODO remove initialization after task-4
     await client.initDBData();
     const products = await client.getAllProducts();
 

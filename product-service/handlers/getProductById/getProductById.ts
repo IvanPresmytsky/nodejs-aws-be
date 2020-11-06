@@ -1,7 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { DBClient } from '../../models';
 import { getCORSHeaders, messagesBuilder } from '../../utils';
-import { TProduct } from '../../types';
 
 import 'source-map-support/register';
 
@@ -23,6 +22,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
 
   try {
     await client.connect();
+    // TODO remove initialization after task-4
     await client.initDBData();
     const product = await client.getProductById(productId);
   
@@ -35,7 +35,7 @@ export const getProductById: APIGatewayProxyHandler = async (event, _context) =>
       };
     }
 
-    console.error(messagesBuilder.getProductById.success(product as TProduct));
+    console.error(messagesBuilder.getProductById.success(product));
     return {
       statusCode: 200,
       headers,

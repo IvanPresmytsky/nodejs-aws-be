@@ -52,7 +52,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
       };
     }
 
-    console.error(messagesBuilder.createProduct.success(product as TProduct));
+    console.error(messagesBuilder.createProduct.success(product));
     return {
       statusCode: 201,
       headers,
