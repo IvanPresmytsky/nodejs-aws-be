@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, Context} from 'aws-lambda';
 import products from '../../mocks/products.json';
-import { getCORSHeaders } from '../../utils';
-import { errorMessages } from './errorMessages';
+import { getCORSHeaders, messagesBuilder } from '../../utils';
 import { getProductById } from '.';
 
 describe('getAllProducts handler', () => {
@@ -43,7 +42,7 @@ describe('getAllProducts handler', () => {
     await expect(result).toEqual({
       statusCode: 404,
       headers: getCORSHeaders(),
-      body: errorMessages.notFound(productId),
+      body: messagesBuilder.getProductById.notFound(productId),
     })
   });
 });
