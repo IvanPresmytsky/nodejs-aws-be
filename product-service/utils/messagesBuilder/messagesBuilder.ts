@@ -21,7 +21,7 @@ export const messagesBuilder = {
     connectionSucess: () => 'Database connection established successfully',
     disconnectionFailed: (err: Error) => `Failed to to disconnect from the database! Details: ${JSON.stringify(err, null, 2)}`,
     disconnectionSucess: () => 'Disconnect from the database',
-    DBInitializationFailed: (err: Error) => `Something went wrong with DB initialization! Details: ${JSON.stringify(err, null, 2)}`,
+    DBInitializationFailed: (err: Error | string) => `Something went wrong with DB initialization! Details: ${JSON.stringify(err, null, 2)}`,
     tablesCreationFailed: (err: Error) => `SSomething went wrong with tables creation! Details: ${JSON.stringify(err, null, 2)}`,
     generalError: (err: Error) => `Something went wrong with DB! Details: ${JSON.stringify(err, null, 2)}`,
   },

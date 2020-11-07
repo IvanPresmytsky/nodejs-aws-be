@@ -30,7 +30,7 @@ export class DBClient {
     }
   }
 
-  async checkIdDataExists(tableName: string) {
+  async checkIfDataExists(tableName: string) {
     const hasProducts = await this.client.query(`select exists(select 1 from ${tableName})`);
     return !!hasProducts.rows[0]?.exists;
   }
@@ -67,18 +67,22 @@ export class DBClient {
     try {
       await this.createTables();
 
-      const hasProducts = await this.checkIdDataExists('products');
-      const hasStocks = await this.checkIdDataExists('stocks');
+      const hasProducts = await this.checkIfDataExists('products');
 
-      if (hasProducts && hasStocks) return;
+      if (hasProducts) return;
 
+      await this.client.query('BEGIN');
       await this.client.query(getInsertProductsQuery());
       const { rows: productIds } = await this.client.query(`SELECT id FROM products`)
 
-      if (productIds) {
-        await this.client.query(getInsertStocksQuery(productIds));
+      if (!productIds) {
+        throw new Error(messagesBuilder.DBClient.DBInitializationFailed('No products was created!'))
       }
+
+      await this.client.query(getInsertStocksQuery(productIds));
+      await this.client.query('COMMIT');
     } catch(err) {
+      await this.client.query('ROLLBACK');
       console.error(messagesBuilder.DBClient.DBInitializationFailed(err));
       throw new Error(messagesBuilder.DBClient.DBInitializationFailed(err));
     }
@@ -128,6 +132,7 @@ export class DBClient {
     count
   }: TProduct): Promise<TProduct> {
     try {
+      await this.client.query('BEGIN');
       await this.client.query(`
         INSERT INTO products (id, title, description, price) VALUES
         ($1::uuid, $2::text, $3::text, $4::integer)
@@ -147,9 +152,10 @@ export class DBClient {
           WHERE id = $1::uuid
         ) beer
       `, [id]);
-
+      await this.client.query('COMMIT');
       return rows;
     } catch (err) {
+      await this.client.query('ROLLBACK');
       console.error(messagesBuilder.DBClient.generalError(err));
       throw new Error(messagesBuilder.DBClient.generalError(err));
     }
