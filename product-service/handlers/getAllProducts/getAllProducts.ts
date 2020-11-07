@@ -1,4 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import { StatusCodes } from 'http-status-codes';
 
 import { DBClient } from '../../models';
 import { getCORSHeaders, messagesBuilder } from '../../utils';
@@ -18,7 +19,7 @@ export const getAllProducts: APIGatewayProxyHandler = async (event, _context) =>
     if (!products?.length) {
       console.error(messagesBuilder.getAllProducts.notFound());
       return {
-        statusCode: 404,
+        statusCode: StatusCodes.NOT_FOUND,
         headers,
         body: messagesBuilder.getAllProducts.notFound(),
       };
@@ -26,14 +27,14 @@ export const getAllProducts: APIGatewayProxyHandler = async (event, _context) =>
 
     console.error(messagesBuilder.getAllProducts.success(products.length));
     return {
-      statusCode: 200,
+      statusCode: StatusCodes.OK,
       headers,
       body: JSON.stringify(products, null, 2),
     };
   } catch (err) {
     console.error(messagesBuilder.generalError(err));
     return {
-      statusCode: 500,
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       headers,
       body: messagesBuilder.generalError(err),
     };

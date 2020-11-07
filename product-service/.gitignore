@@ -8,5 +8,5 @@ jspm_packages
 # Webpack directories
 .webpack
 
-# Sectets
+# ENV variables
 .env

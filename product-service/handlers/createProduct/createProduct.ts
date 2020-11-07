@@ -1,4 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import { StatusCodes } from 'http-status-codes';
 import { DBClient } from '../../models';
 import { getCORSHeaders, messagesBuilder } from '../../utils';
 import { TProduct } from '../../types';
@@ -14,7 +15,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   if (!productData) {
     console.error(messagesBuilder.createProduct.badRequest());
     return {
-      statusCode: 400,
+      statusCode: StatusCodes.BAD_REQUEST,
       headers,
       body: messagesBuilder.createProduct.badRequest(),
     };
@@ -31,7 +32,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   if (!(id && title && description && price && count)) {
     console.error(messagesBuilder.createProduct.badRequest());
     return {
-      statusCode: 400,
+      statusCode: StatusCodes.BAD_REQUEST,
       headers,
       body: messagesBuilder.createProduct.badRequest(),
     };
@@ -46,7 +47,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
     if (!product) {
       console.error(messagesBuilder.createProduct.creationFailed());
       return {
-        statusCode: 500,
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
         headers,
         body: messagesBuilder.createProduct.creationFailed(),
       };
@@ -54,14 +55,14 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
 
     console.error(messagesBuilder.createProduct.success(product));
     return {
-      statusCode: 201,
+      statusCode: StatusCodes.CREATED,
       headers,
       body: JSON.stringify(product, null, 2),
     };
   } catch (err) {
     console.error(messagesBuilder.generalError(err));
     return {
-      statusCode: 500,
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       headers,
       body: messagesBuilder.generalError(err),
     };
