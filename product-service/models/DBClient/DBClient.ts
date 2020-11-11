@@ -72,8 +72,7 @@ export class DBClient {
       if (hasProducts) return;
 
       await this.client.query('BEGIN');
-      await this.client.query(getInsertProductsQuery());
-      const { rows: productIds } = await this.client.query(`SELECT id FROM products`)
+      const { rows: productIds } = await this.client.query(getInsertProductsQuery());
 
       if (!productIds) {
         throw new Error(messagesBuilder.DBClient.DBInitializationFailed('No products was created!'))
@@ -125,7 +124,6 @@ export class DBClient {
   }
 
   async createProduct({
-    id,
     title,
     description,
     price,
@@ -133,17 +131,20 @@ export class DBClient {
   }: TProduct): Promise<TProduct> {
     try {
       await this.client.query('BEGIN');
-      await this.client.query(`
-        INSERT INTO products (id, title, description, price) VALUES
-        ($1::uuid, $2::text, $3::text, $4::integer)
-      `, [id, title, description, price]);
+      const { rows } = await this.client.query(`
+        INSERT INTO products (title, description, price) VALUES
+        ($1::text, $2::text, $3::integer)
+        RETURNING id
+      `, [title, description, price]);
+
+      const productId = rows[0].id
 
       await this.client.query(`
         INSERT INTO stocks (product_id, count) VALUES
         ($1::uuid, $2::integer)
-      `, [id, count]);
+      `, [productId, count]);
       
-      const { rows } = await this.client.query(`
+      const { rows: product } = await this.client.query(`
         SELECT id, title, description, price, count FROM
         (
           SELECT * FROM products
@@ -151,9 +152,9 @@ export class DBClient {
           ON stocks.product_id = products.id
           WHERE id = $1::uuid
         ) beer
-      `, [id]);
+      `, [productId]);
       await this.client.query('COMMIT');
-      return rows;
+      return product;
     } catch (err) {
       await this.client.query('ROLLBACK');
       console.error(messagesBuilder.DBClient.generalError(err));

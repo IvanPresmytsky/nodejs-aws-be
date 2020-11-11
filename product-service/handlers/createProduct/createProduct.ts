@@ -22,14 +22,13 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   }
 
   const {
-    id,
     title,
     description,
     price,
     count
   } = productData;
   
-  if (!(id && title && description && price && count)) {
+  if (!(title && description && price && count)) {
     console.error(messagesBuilder.createProduct.badRequest());
     return {
       statusCode: StatusCodes.BAD_REQUEST,
