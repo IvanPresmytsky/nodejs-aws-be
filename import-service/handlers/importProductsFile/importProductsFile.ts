@@ -4,10 +4,8 @@ import { responseBuilder, messagesBuilder } from '../../utils';
 
 import 'source-map-support/register';
 
-const BUCKET = 'products-importer';
-const REGION = 'eu-west-1';
-
 export const importProductsFile: APIGatewayProxyHandler = async (event, _context) => {
+  const { BUCKET_NAME, REGION } = process.env;
   const catalogName = event?.queryStringParameters?.name;
 
   if (!catalogName) {
@@ -17,7 +15,7 @@ export const importProductsFile: APIGatewayProxyHandler = async (event, _context
   const catalogPath = `uploaded/${catalogName}`;
 
   const params = {
-    Bucket: BUCKET,
+    Bucket: BUCKET_NAME,
     Key: catalogPath,
     Expires: 60,
     ContentType: 'text/csv',
