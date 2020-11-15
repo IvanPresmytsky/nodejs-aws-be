@@ -27,12 +27,12 @@ const serverlessConfiguration: Serverless = {
       {
         Effect: 'Allow',
         Action: 's3:ListBucket',
-        Resource: 'arn:aws:s3:::products-importer'
+        Resource: 'arn:aws:s3:::beer-shop-products'
       },
       {
         Effect: 'Allow',
         Action: 's3:*',
-        Resource: 'arn:aws:s3:::products-importer/*'
+        Resource: 'arn:aws:s3:::beer-shop-products/*'
       }
     ]
   },
@@ -56,24 +56,24 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
-    importFileParser: {
-      handler: 'handlers/importProductsFile/importProductsFile.importProductsFile',
+    importFilesParser: {
+      handler: 'handlers/importFilesParser/importFilesParser.importFilesParser',
       events: [
         {
           s3: {
-            bucket: 'products-importer',
+            bucket: 'beer-shop-products',
             event: 's3:ObjectCreated:*',
             rules: [
               {
                 prefix: 'uploaded',
-                suffix: null,
+                suffix: '',
               },
             ],
             existing: true,
           }
         }
       ]
-    }
+    },
   }
 }
 
