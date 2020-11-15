@@ -1,4 +1,4 @@
-import AWSMock from 'aws-sdk-mock';
+import * as AWSMock from 'aws-sdk-mock';
 import { Context } from 'aws-lambda';
 
 import { responseBuilder, messagesBuilder } from '../../utils';
@@ -10,7 +10,7 @@ describe('importProductsFile handler', () => {
 
   afterEach(() => {
     AWSMock.restore('S3');
-  })
+  });
 
   it('should return an error when file name is not provided', async () => {
     const event = {
@@ -31,7 +31,8 @@ describe('importProductsFile handler', () => {
     const mockSignedUrl = 'https://beer-shop-products.s3.eu-west-1.amazonaws.com/uploaded/products.csv';
 
     AWSMock.mock('S3', 'getSignedUrl', (_action, _params, callback) => {
-      callback(null, mockSignedUrl);
+      console.log('S3', 'getSignedUrl', 'mock called')
+      callback(null, mockSignedUrl)
     });
 
     const result = await importProductsFile(event, context, callback);
@@ -46,14 +47,16 @@ describe('importProductsFile handler', () => {
       },
     } as any;
 
+    const error = new Error('Error with importing!')
+
     AWSMock.mock('S3', 'getSignedUrl', (_action, _params, callback) => {
-      callback({ error: 'error' }, null);
+      callback(error, null);
     });
 
     const result = await importProductsFile(event, context, callback);
 
     expect(result).toEqual(responseBuilder.serverError(
-      messagesBuilder.importProductFile.generalError(new Error('error'))
+      messagesBuilder.importProductFile.generalError(error)
     ));
   });
 });
