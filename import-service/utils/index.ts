@@ -1,2 +1,3 @@
 export * from './getCORSHeaders/getCORSHeaders';
-export * from './getUrls/getUrls';
+export * from './responseBuilder/responseBuilder';
+export * from './messagesBuilder/messagesBuilder';

@@ -48,10 +48,28 @@ const serverlessConfiguration: Serverless = {
             request: {
               parameters: {
                 querystrings: {
-                  file: true,
+                  name: true,
                 }
               }
             },
+          }
+        }
+      ]
+    },
+    importFileParser: {
+      handler: 'handlers/importProductsFile/importProductsFile.importProductsFile',
+      events: [
+        {
+          s3: {
+            bucket: 'products-importer',
+            event: 's3:ObjectCreated:*',
+            rules: [
+              {
+                prefix: 'uploaded',
+                suffix: null,
+              },
+            ],
+            existing: true,
           }
         }
       ]
