@@ -20,6 +20,37 @@ const serverlessConfiguration: Serverless = {
     apiGateway: {
       minimumCompressionSize: 1024,
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        }
+      }
+    ]
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue'
+        }
+      },
+    },
+    Outputs: {
+      SQSQueueUrl: {
+        Value: {
+          Ref: 'SQSQueue',
+        }
+      },
+      SQSQueueArn: {
+        Value: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        }
+      }
+    }
   },
   functions: {
     getAllProducts: {
@@ -70,6 +101,22 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
+    catalogBatchProcess: {
+      handler: 'handlers/catalogBatchProcess/catalogBatchProcess.catalogBatchProcess',
+      events: [
+        {
+          sqs: {
+            batchSize: 1,
+            arn: {
+              'Fn::GetAtt': [
+                'SQSQueue',
+                'Arn',
+              ]
+            }
+          }
+        }
+      ]
+    }
   }
 }
 
