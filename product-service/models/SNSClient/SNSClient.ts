@@ -9,24 +9,16 @@ export class SNSClient {
     this.topicArn = snsArn;
   }
 
-  publish(subject: string, message: string) {
+  publish(subject: string, message: string, success: boolean) {
     this.client.publish({
       Subject: subject,
       Message: message,
       TopicArn: this.topicArn,
       MessageAttributes: {
-        count: {
-          DataType: 'Number'
+        success: {
+          DataType: 'Number',
+          StringValue: Number(success).toString(),
         },
-        description: {
-          DataType: 'String'
-        },
-        price: {
-          DataType: 'Number'
-        },
-        title: {
-          DataType: 'String'
-        }
       }
     }, (err) => {
       if (err) {

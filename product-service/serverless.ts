@@ -65,22 +65,15 @@ const serverlessConfiguration: Serverless = {
             Ref: 'SNSTopic',
           },
           FilterPolicy: {
-            count: {
-              DataType: 'Number'
-            },
-            description: {
-              DataType: 'String'
-            },
-            price: {
-              DataType: 'Number'
-            },
-            title: {
-              DataType: 'String'
-            },
+            success: [
+              {
+                exist: ['=', 1]
+              }
+            ]
           }
         },
       },
-      SNSSubscriptionFailed: {
+      SNSSubscriptionErrors: {
         Type: 'AWS::SNS::Subscription',
         Properties: {
           Endpoint: 'ivan.presmytsky.aws@gmail.com',
@@ -88,6 +81,13 @@ const serverlessConfiguration: Serverless = {
           TopicArn: {
             Ref: 'SNSTopic',
           },
+           FilterPolicy: {
+            success: [
+              {
+                numeric: ['=', 0]
+              }
+            ]
+          }
         },
       }
     },
