@@ -20,12 +20,24 @@ const serverlessConfiguration: Serverless = {
     apiGateway: {
       minimumCompressionSize: 1024,
     },
+    environment: {
+      SNS_ARN: {
+        Ref: 'SNSTopic',
+      },
+    },
     iamRoleStatements: [
       {
         Effect: 'Allow',
         Action: 'sqs:*',
         Resource: {
           'Fn::GetAtt': ['SQSQueue', 'Arn']
+        }
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: {
+          Ref: 'SNSTopic', 
         }
       }
     ]
@@ -38,6 +50,46 @@ const serverlessConfiguration: Serverless = {
           QueueName: 'catalogItemsQueue'
         }
       },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic',
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'ivan.presmytsky@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+          FilterPolicy: {
+            count: {
+              DataType: 'Number'
+            },
+            description: {
+              DataType: 'String'
+            },
+            price: {
+              DataType: 'Number'
+            },
+            title: {
+              DataType: 'String'
+            },
+          }
+        },
+      },
+      SNSSubscriptionFailed: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'ivan.presmytsky.aws@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+        },
+      }
     },
     Outputs: {
       SQSQueueUrl: {
@@ -106,7 +158,7 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           sqs: {
-            batchSize: 1,
+            batchSize: 5,
             arn: {
               'Fn::GetAtt': [
                 'SQSQueue',
