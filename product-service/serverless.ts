@@ -67,7 +67,7 @@ const serverlessConfiguration: Serverless = {
           FilterPolicy: {
             success: [
               {
-                exist: ['=', 1]
+                numeric: ['=', 1]
               }
             ]
           }
