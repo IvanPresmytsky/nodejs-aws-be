@@ -15,7 +15,7 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
     await Promise.all(promises);
     console.log(messagesBuilder.catalogBatchProcess.success(promises.length));
   } catch (error) {
-    sns.publish('Product has been created successfully', error, false);
+    sns.publish('Product failed to create', error, false);
     console.error(messagesBuilder.generalError(error));
   }
 }
