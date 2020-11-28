@@ -1,24 +1,18 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import { StatusCodes } from 'http-status-codes';
+import { APIGatewayProxyHandler, APIGatewayProxyEvent } from 'aws-lambda';
 import { DBClient } from '../../models';
-import { getCORSHeaders, messagesBuilder } from '../../utils';
+import { messagesBuilder, responseBuilder } from '../../utils';
 import { TProduct } from '../../types';
 
 import 'source-map-support/register';
 
 export const createProduct: APIGatewayProxyHandler = async (event, _context) => {
-  console.log(messagesBuilder.incomingEvent(event));
-  const headers = getCORSHeaders();
+  console.log(messagesBuilder.incomingEvent<APIGatewayProxyEvent>(event));
 
   const productData: TProduct = event?.body && JSON.parse(event.body);
 
   if (!productData) {
     console.error(messagesBuilder.createProduct.badRequest());
-    return {
-      statusCode: StatusCodes.BAD_REQUEST,
-      headers,
-      body: messagesBuilder.createProduct.badRequest(),
-    };
+    return responseBuilder.badRequest(messagesBuilder.createProduct.badRequest());
   }
 
   const {
@@ -30,11 +24,7 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   
   if (!(title && description && price && count)) {
     console.error(messagesBuilder.createProduct.badRequest());
-    return {
-      statusCode: StatusCodes.BAD_REQUEST,
-      headers,
-      body: messagesBuilder.createProduct.badRequest(),
-    };
+    return responseBuilder.badRequest(messagesBuilder.createProduct.badRequest());
   }
 
   const client = new DBClient();
@@ -45,26 +35,14 @@ export const createProduct: APIGatewayProxyHandler = async (event, _context) => 
   
     if (!product) {
       console.error(messagesBuilder.createProduct.creationFailed());
-      return {
-        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        headers,
-        body: messagesBuilder.createProduct.creationFailed(),
-      };
+      return responseBuilder.serverError(messagesBuilder.createProduct.creationFailed());
     }
 
-    console.error(messagesBuilder.createProduct.success(product));
-    return {
-      statusCode: StatusCodes.CREATED,
-      headers,
-      body: JSON.stringify(product, null, 2),
-    };
+    console.log(messagesBuilder.createProduct.success(product));
+    return responseBuilder.created(product);
   } catch (err) {
     console.error(messagesBuilder.generalError(err));
-    return {
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-      headers,
-      body: messagesBuilder.generalError(err),
-    };
+    return responseBuilder.serverError(messagesBuilder.generalError(err));
   } finally {
     await client.disconnect();
   }

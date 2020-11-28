@@ -1,4 +1,3 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
 import { TProduct } from '../../types';
 
 export const messagesBuilder = {
@@ -16,6 +15,9 @@ export const messagesBuilder = {
     badRequest: () => 'Bad request! productId parameter should be provided!',
     success: (product: TProduct) => `Succesfully returned the following product: ${JSON.stringify(product, null, 2)}`,
   },
+  catalogBatchProcess: {
+    success: (count: number) => `${count} of products were successfully added to DB!`,
+  },
   DBClient: {
     connectionFailed: (err: Error) => `Failed to connect to the database! Details: ${JSON.stringify(err, null, 2)}`,
     connectionSucess: () => 'Database connection established successfully',
@@ -26,6 +28,6 @@ export const messagesBuilder = {
     generalError: (err: Error) => `Something went wrong with DB! Details: ${JSON.stringify(err, null, 2)}`,
   },
   generalError: (details: string) => `Something went wrong! Details: ${details}`,
-  incomingEvent: (event: APIGatewayProxyEvent) => `The following event was passed to lamda: ${JSON.stringify(event, null, 2)}`,
+  incomingEvent: <T>(event: T) => `The following event was passed to lamda: ${JSON.stringify(event, null, 2)}`,
   success: () => 'Operation completed successfully!',
 };

@@ -1,43 +1,27 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import { StatusCodes } from 'http-status-codes';
+import { APIGatewayProxyHandler, APIGatewayProxyEvent } from 'aws-lambda';
 
 import { DBClient } from '../../models';
-import { getCORSHeaders, messagesBuilder } from '../../utils';
+import { messagesBuilder, responseBuilder } from '../../utils';
 import 'source-map-support/register';
 
 export const getAllProducts: APIGatewayProxyHandler = async (event, _context) => {
-  console.log(messagesBuilder.incomingEvent(event));
+  console.log(messagesBuilder.incomingEvent<APIGatewayProxyEvent>(event));
   const client = new DBClient();
-  const headers = getCORSHeaders();
 
   try {
     await client.connect();
-    // TODO remove initialization after task-4
-    await client.initDBData();
     const products = await client.getAllProducts();
 
     if (!products?.length) {
       console.error(messagesBuilder.getAllProducts.notFound());
-      return {
-        statusCode: StatusCodes.NOT_FOUND,
-        headers,
-        body: messagesBuilder.getAllProducts.notFound(),
-      };
+      return responseBuilder.notFound(messagesBuilder.getAllProducts.notFound());
     }
 
     console.error(messagesBuilder.getAllProducts.success(products.length));
-    return {
-      statusCode: StatusCodes.OK,
-      headers,
-      body: JSON.stringify(products, null, 2),
-    };
+    return responseBuilder.success(products)
   } catch (err) {
     console.error(messagesBuilder.generalError(err));
-    return {
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-      headers,
-      body: messagesBuilder.generalError(err),
-    };
+    return responseBuilder.serverError(messagesBuilder.generalError(err));
   } finally {
     await client.disconnect();
   }

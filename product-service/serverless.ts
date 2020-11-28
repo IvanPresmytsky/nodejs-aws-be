@@ -20,6 +20,89 @@ const serverlessConfiguration: Serverless = {
     apiGateway: {
       minimumCompressionSize: 1024,
     },
+    environment: {
+      SNS_ARN: {
+        Ref: 'SNSTopic',
+      },
+    },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        }
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: {
+          Ref: 'SNSTopic', 
+        }
+      }
+    ]
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue'
+        }
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic',
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'ivan.presmytsky@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+          FilterPolicy: {
+            success: [
+              {
+                numeric: ['=', 1]
+              }
+            ]
+          }
+        },
+      },
+      SNSSubscriptionErrors: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'ivan.presmytsky.aws@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+           FilterPolicy: {
+            success: [
+              {
+                numeric: ['=', 0]
+              }
+            ]
+          }
+        },
+      }
+    },
+    Outputs: {
+      SQSQueueUrl: {
+        Value: {
+          Ref: 'SQSQueue',
+        }
+      },
+      SQSQueueArn: {
+        Value: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        }
+      }
+    }
   },
   functions: {
     getAllProducts: {
@@ -70,6 +153,22 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
+    catalogBatchProcess: {
+      handler: 'handlers/catalogBatchProcess/catalogBatchProcess.catalogBatchProcess',
+      events: [
+        {
+          sqs: {
+            batchSize: 5,
+            arn: {
+              'Fn::GetAtt': [
+                'SQSQueue',
+                'Arn',
+              ]
+            }
+          }
+        }
+      ]
+    }
   }
 }
 

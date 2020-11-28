@@ -1,0 +1,50 @@
+[
+    {
+        "messageId": "dea1cdbb-d3b9-42e9-a3e1-9a9d11651e07",
+        "receiptHandle": "AQEB9+HOSCGRECmE2IO5CG7cWc3N6P4emPSZDhEcXvY3WXefCMEy4ocbIK/8w4r9znOPFGJuutjquQmXujKuix1Yps1CxzjBkZWQ4Y61WN7DNtWXEMBG7JtWXx5/sgJMCdaR/56EGyfqBFcbKNdMqKyOD2j19G+k8R1RVUWUkpAPQudH3bsSOX4ZI1q+Cjprbwu1RzgqLkJm6Jih10w9xd0NhJDtUbAZMG+gB3K+fFq3sLYPz1tyHQWyCSuK+4IUsKYOvVysBhG5VJxc7ROBmoKVLdjpbLo0XOKrCuTac8hkFqN7TeLHk2Lmr18TUMQxLjmmzlxYSHguQb0dz8wnUVF9/IgzP6sk015WCuz4YvdZSVseupUmlRreo3POfGNV+zLzlzh5rd8ylC+VgYUTjdqYpQ==",
+        "body": "{\"title\":\"Brown ale\",\"description\":\"Short Product Description3\",\"price\":\"10\",\"count\":\"35\"}",
+        "attributes": {
+            "ApproximateReceiveCount": "1",
+            "SentTimestamp": "1606048198319",
+            "SenderId": "AROASB6VYX52F6QE7FQKQ:import-service-dev-importFilesParser",
+            "ApproximateFirstReceiveTimestamp": "1606048198330"
+        },
+        "messageAttributes": {},
+        "md5OfBody": "700b73c99a9c7ad278dc2cefa83c7709",
+        "eventSource": "aws:sqs",
+        "eventSourceARN": "arn:aws:sqs:eu-west-1:141645365108:catalogItemsQueue",
+        "awsRegion": "eu-west-1"
+    },
+    {
+        "messageId": "1fcd261f-013d-42cf-8f92-20b122afc4d7",
+        "receiptHandle": "AQEBnI73us6PEiOXbs9W4fxhjICI3OAkwyG9JsHcUzN+XKcIudWseSwkRAk146ICbNh+nKBL+nMcdzkjtdxSJlgn7IpCiEZ4jae+RN4IKbLFFt2s99kuxfqIOWreKhxbGbqBSoopUSsb0QiDBNOVrWQbRGS1XXTuCdqoq8yu17JWoNyFaPhQpGQK+iecBnq6nNjQc7Ra49agCD0Fb1K3EKREVZXJIDD3AhLR1K/+kzPA6LNR3mraWyosUxiq4H3sz68puftD355ZTiBoVekfmgGQEIhBMtlXcf23RK3lp+Seit1RClNNR8GHGEn46pM4C5hriAsXphlXVGO+glcY+HWbRNJtcU8OH+czwvjxN8q2TpGJuIzORerAGCj5KD+lvg2RF9I1qijqECD516IBoxl3bA==",
+        "body": "{\"title\":\"APA\",\"description\":\"Short Product Descriptio1\",\"price\":\"7\",\"count\":\"49\"}",
+        "attributes": {
+            "ApproximateReceiveCount": "1",
+            "SentTimestamp": "1606048198335",
+            "SenderId": "AROASB6VYX52F6QE7FQKQ:import-service-dev-importFilesParser",
+            "ApproximateFirstReceiveTimestamp": "1606048198336"
+        },
+        "messageAttributes": {},
+        "md5OfBody": "1a1be62288393758a5114161d5d5854c",
+        "eventSource": "aws:sqs",
+        "eventSourceARN": "arn:aws:sqs:eu-west-1:141645365108:catalogItemsQueue",
+        "awsRegion": "eu-west-1"
+    },
+    {
+        "messageId": "44c2c631-30fa-4226-b949-58a9eddacbc6",
+        "receiptHandle": "AQEB9nZqYienQHSPzqwRjCD05BkoxP8rzCL0i514sBPtExAnP7loldFSQL4BXadOvT7jT7xJjKHGK4NQCq7u4ZOpywewFkYkeJs0KndnhBNggaY49tj7UQN0YzPZRICoq9dixzSwenrjcVZXE7Q55jssjl8y+IOf0g0BPhDHZzyAsA6gHzj5tAh6DmpGg884HEiOWpNCLPNADHrN3+7ey0xS5cHyFvVdBmWuE3SnQ9e3FBfFJ2/0BKQCFibSpvtYxzyc07nPaIPoS+OVx3bLJymra0wgeWgslMW1pXMGzcBIuEEZGvd0f1xkK71rJzDGlVf8jAXgjVAmcNG+4wkv4acqJkkTkyRHVVp5/GMOkZZGdCjMOTKS600pYaIMyqG6QlNxARhtyD3XnqigwuW6PtFqjA==",
+        "body": "{\"title\":\"Stout\",\"description\":\"Short Product Description7\",\"price\":\"15\",\"count\":\"42\"}",
+        "attributes": {
+            "ApproximateReceiveCount": "1",
+            "SentTimestamp": "1606048198320",
+            "SenderId": "AROASB6VYX52F6QE7FQKQ:import-service-dev-importFilesParser",
+            "ApproximateFirstReceiveTimestamp": "1606048198321"
+        },
+        "messageAttributes": {},
+        "md5OfBody": "c257ea95e763017f911cdb507482a153",
+        "eventSource": "aws:sqs",
+        "eventSourceARN": "arn:aws:sqs:eu-west-1:141645365108:catalogItemsQueue",
+        "awsRegion": "eu-west-1"
+    }
+]
