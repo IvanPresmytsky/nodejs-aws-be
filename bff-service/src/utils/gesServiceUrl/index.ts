@@ -1,5 +1,6 @@
+import { getServiceName } from '../getServiceName';
+
 export const getServiceUrl = (url: string): string | undefined  => {
-  console.log('url', url);
-  const serviceName = url.split('/')[1];
+  const serviceName = getServiceName(url);
   return process.env[serviceName];
 }
