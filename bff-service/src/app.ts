@@ -1,8 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { Method } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
-import { runProxy, getServiceUrl, getServiceName } from './utils';
+import { getServiceUrl, getServiceName } from './utils';
 import { CacheService, ECacheFields } from './services/cacheService';
 
 dotenv.config({
@@ -24,16 +25,15 @@ app.all('/*', async (req, res) => {
   const serviceUrl = getServiceUrl(originalUrl);
 
   if (!serviceUrl) {
-    res.status(502).json({ error: 'Cannot process request' });
+    res.status(StatusCodes.BAD_GATEWAY).json({ error: 'Cannot process request' });
   }
 
   const finalURL = `${serviceUrl}${originalUrl}`;
 
   try {
-    const { status, data } = await runProxy(finalURL, method as Method, body);
-    const response = cacheService.checkForCached(serviceName, method as Method, data);
+    const { status, data } = await cacheService.runCachedProxy(serviceName, finalURL, method as Method, body);
 
-    res.status(status).json(response);
+    res.status(status).json(data);
   } catch (error) {
     const errorMessage = `Something went wrong! ${JSON.stringify(error)}`
     console.error(errorMessage);
@@ -41,7 +41,7 @@ app.all('/*', async (req, res) => {
     const { response } = error;
 
     if (!response) {
-      res.status(500).json(errorMessage);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorMessage);
     }
 
     res.status(response.status).json(response.data);
