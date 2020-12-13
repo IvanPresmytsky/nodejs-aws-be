@@ -17,6 +17,14 @@ const cacheService = new CacheService(CACHE_TIMER);
 
 app.use(express.json());
 
+app.use((_req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Credentials': 'true'
+  });
+  next();
+});
 
 app.all('/*', async (req, res) => {
   const { originalUrl, method, body } = req;
@@ -44,7 +52,7 @@ app.all('/*', async (req, res) => {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorMessage);
     }
 
-    res.status(response.status).json(response.data);
+    res.status(response?.status).json(response?.data);
   }
 });
 
