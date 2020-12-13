@@ -12,16 +12,15 @@ import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { ProxyService } from 'src/proxy/proxy.service';
 
-@Controller('product')
+@Controller('products')
 export class ProductsController {
   constructor(private productsService: ProxyService, private configService: ConfigService) {}
 
-  @Get('products')
+  @Get()
   @UseInterceptors(CacheInterceptor)
   handleProducts(@Req() request: Request, @Res() response: Response): any {
-    const serviceUrl = this.configService.get<string>('product');
-    const finalUrl = `${serviceUrl}/products`;
-    return this.productsService.handleRequest(finalUrl, request, response);
+    const serviceUrl = this.configService.get<string>('products');
+    return this.productsService.handleRequest(serviceUrl, request, response);
   }
 
   @All()
